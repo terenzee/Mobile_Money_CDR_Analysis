@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #222222;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"font": {"color": "white"}, "group": 1, "id": "346370", "label": "346370", "shape": "dot", "size": 10, "title": "346370"}, {"font": {"color": "white"}, "group": 2, "id": "233240991516", "label": "233240991516", "shape": "dot", "size": 5, "title": "233240991516"}, {"font": {"color": "white"}, "group": 1, "id": "51358147210", "label": "51358147210", "shape": "dot", "size": 10, "title": "51358147210"}, {"font": {"color": "white"}, "group": 1, "id": "6439433", "label": "6439433", "shape": "dot", "size": 10, "title": "6439433"}, {"font": {"color": "white"}, "group": 1, "id": "783273271", "label": "783273271", "shape": "dot", "size": 10, "title": "783273271"}, {"font": {"color": "white"}, "group": 1, "id": "431", "label": "431", "shape": "dot", "size": 10, "title": "431"}, {"font": {"color": "white"}, "group": 1, "id": "233593954423", "label": "233593954423", "shape": "dot", "size": 10, "title": "233593954423"}, {"font": {"color": "white"}, "group": 1, "id": "1355", "label": "1355", "shape": "dot", "size": 10, "title": "1355"}, {"font": {"color": "white"}, "group": 1, "id": "16784978041", "label": "16784978041", "shape": "dot", "size": 10, "title": "16784978041"}, {"font": {"color": "white"}, "group": 1, "id": "225842610", "label": "225842610", "shape": "dot", "size": 10, "title": "225842610"}, {"font": {"color": "white"}, "group": 1, "id": "231770511512", "label": "231770511512", "shape": "dot", "size": 10, "title": "231770511512"}, {"font": {"color": "white"}, "group": 1, "id": "231777523228", "label": "231777523228", "shape": "dot", "size": 10, "title": "231777523228"}, {"font": {"color": "white"}, "group": 1, "id": "231886518054", "label": "231886518054", "shape": "dot", "size": 10, "title": "231886518054"}, {"font": {"color": "white"}, "group": 1, "id": "233201219203", "label": "233201219203", "shape": "dot", "size": 10, "title": "233201219203"}, {"font": {"color": "white"}, "group": 1, "id": "233202021709", "label": "233202021709", "shape": "dot", "size": 10, "title": "233202021709"}, {"font": {"color": "white"}, "group": 1, "id": "233202526305", "label": "233202526305", "shape": "dot", "size": 10, "title": "233202526305"}, {"font": {"color": "white"}, "group": 1, "id": "233202803621", "label": "233202803621", "shape": "dot", "size": 10, "title": "233202803621"}, {"font": {"color": "white"}, "group": 1, "id": "233203902561", "label": "233203902561", "shape": "dot", "size": 10, "title": "233203902561"}, {"font": {"color": "white"}, "group": 1, "id": "233207028863", "label": "233207028863", "shape": "dot", "size": 10, "title": "233207028863"}, {"font": {"color": "white"}, "group": 1, "id": "233208482616", "label": "233208482616", "shape": "dot", "size": 10, "title": "233208482616"}, {"font": {"color": "white"}, "group": 1, "id": "233208966008", "label": "233208966008", "shape": "dot", "size": 10, "title": "233208966008"}, {"font": {"color": "white"}, "group": 1, "id": "233209213259", "label": "233209213259", "shape": "dot", "size": 10, "title": "233209213259"}, {"font": {"color": "white"}, "group": 1, "id": "233240796931", "label": "233240796931", "shape": "dot", "size": 10, "title": "233240796931"}, {"font": {"color": "white"}, "group": 2, "id": "233240334234", "label": "233240334234", "shape": "dot", "size": 5, "title": "233240334234"}, {"font": {"color": "white"}, "group": 2, "id": "233241366640", "label": "233241366640", "shape": "dot", "size": 5, "title": "233241366640"}, {"font": {"color": "white"}, "group": 2, "id": "233242287955", "label": "233242287955", "shape": "dot", "size": 5, "title": "233242287955"}, {"font": {"color": "white"}, "group": 2, "id": "233243757110", "label": "233243757110", "shape": "dot", "size": 5, "title": "233243757110"}, {"font": {"color": "white"}, "group": 2, "id": "233244354463", "label": "233244354463", "shape": "dot", "size": 5, "title": "233244354463"}, {"font": {"color": "white"}, "group": 2, "id": "233244809000", "label": "233244809000", "shape": "dot", "size": 5, "title": "233244809000"}, {"font": {"color": "white"}, "group": 2, "id": "233256666058", "label": "233256666058", "shape": "dot", "size": 5, "title": "233256666058"}, {"font": {"color": "white"}, "group": 2, "id": "233508888450", "label": "233508888450", "shape": "dot", "size": 5, "title": "233508888450"}, {"font": {"color": "white"}, "group": 2, "id": "233533368971", "label": "233533368971", "shape": "dot", "size": 5, "title": "233533368971"}, {"font": {"color": "white"}, "group": 2, "id": "233536641991", "label": "233536641991", "shape": "dot", "size": 5, "title": "233536641991"}, {"font": {"color": "white"}, "group": 2, "id": "233550538528", "label": "233550538528", "shape": "dot", "size": 5, "title": "233550538528"}, {"font": {"color": "white"}, "group": 2, "id": "233555273377", "label": "233555273377", "shape": "dot", "size": 5, "title": "233555273377"}, {"font": {"color": "white"}, "group": 2, "id": "233556820282", "label": "233556820282", "shape": "dot", "size": 5, "title": "233556820282"}, {"font": {"color": "white"}, "group": 2, "id": "233557830001", "label": "233557830001", "shape": "dot", "size": 5, "title": "233557830001"}, {"font": {"color": "white"}, "group": 2, "id": "233558380087", "label": "233558380087", "shape": "dot", "size": 5, "title": "233558380087"}, {"font": {"color": "white"}, "group": 2, "id": "233558600936", "label": "233558600936", "shape": "dot", "size": 5, "title": "233558600936"}, {"font": {"color": "white"}, "group": 2, "id": "233593954225", "label": "233593954225", "shape": "dot", "size": 5, "title": "233593954225"}, {"font": {"color": "white"}, "group": 2, "id": "233596387853", "label": "233596387853", "shape": "dot", "size": 5, "title": "233596387853"}, {"font": {"color": "white"}, "group": 1, "id": "233240993635", "label": "233240993635", "shape": "dot", "size": 10, "title": "233240993635"}, {"font": {"color": "white"}, "group": 1, "id": "233241198488", "label": "233241198488", "shape": "dot", "size": 10, "title": "233241198488"}, {"font": {"color": "white"}, "group": 1, "id": "233241830259", "label": "233241830259", "shape": "dot", "size": 10, "title": "233241830259"}, {"font": {"color": "white"}, "group": 1, "id": "233242024203", "label": "233242024203", "shape": "dot", "size": 10, "title": "233242024203"}, {"font": {"color": "white"}, "group": 1, "id": "233242251178", "label": "233242251178", "shape": "dot", "size": 10, "title": "233242251178"}, {"font": {"color": "white"}, "group": 1, "id": "233242308181", "label": "233242308181", "shape": "dot", "size": 10, "title": "233242308181"}, {"font": {"color": "white"}, "group": 1, "id": "233242318945", "label": "233242318945", "shape": "dot", "size": 10, "title": "233242318945"}, {"font": {"color": "white"}, "group": 1, "id": "233242337588", "label": "233242337588", "shape": "dot", "size": 10, "title": "233242337588"}, {"font": {"color": "white"}, "group": 1, "id": "233242534727", "label": "233242534727", "shape": "dot", "size": 10, "title": "233242534727"}, {"font": {"color": "white"}, "group": 1, "id": "233242870344", "label": "233242870344", "shape": "dot", "size": 10, "title": "233242870344"}, {"font": {"color": "white"}, "group": 1, "id": "233242944563", "label": "233242944563", "shape": "dot", "size": 10, "title": "233242944563"}, {"font": {"color": "white"}, "group": 1, "id": "233243159292", "label": "233243159292", "shape": "dot", "size": 10, "title": "233243159292"}, {"font": {"color": "white"}, "group": 1, "id": "233243569772", "label": "233243569772", "shape": "dot", "size": 10, "title": "233243569772"}, {"font": {"color": "white"}, "group": 1, "id": "233243886736", "label": "233243886736", "shape": "dot", "size": 10, "title": "233243886736"}, {"font": {"color": "white"}, "group": 1, "id": "233244217277", "label": "233244217277", "shape": "dot", "size": 10, "title": "233244217277"}, {"font": {"color": "white"}, "group": 1, "id": "233244250823", "label": "233244250823", "shape": "dot", "size": 10, "title": "233244250823"}, {"font": {"color": "white"}, "group": 1, "id": "233244277344", "label": "233244277344", "shape": "dot", "size": 10, "title": "233244277344"}, {"font": {"color": "white"}, "group": 1, "id": "233244300000", "label": "233244300000", "shape": "dot", "size": 10, "title": "233244300000"}, {"font": {"color": "white"}, "group": 1, "id": "233244313800", "label": "233244313800", "shape": "dot", "size": 10, "title": "233244313800"}, {"font": {"color": "white"}, "group": 1, "id": "233244333150", "label": "233244333150", "shape": "dot", "size": 10, "title": "233244333150"}, {"font": {"color": "white"}, "group": 1, "id": "233244431926", "label": "233244431926", "shape": "dot", "size": 10, "title": "233244431926"}, {"font": {"color": "white"}, "group": 1, "id": "233244492321", "label": "233244492321", "shape": "dot", "size": 10, "title": "233244492321"}, {"font": {"color": "white"}, "group": 1, "id": "233244494049", "label": "233244494049", "shape": "dot", "size": 10, "title": "233244494049"}, {"font": {"color": "white"}, "group": 1, "id": "233244514923", "label": "233244514923", "shape": "dot", "size": 10, "title": "233244514923"}, {"font": {"color": "white"}, "group": 1, "id": "233244589157", "label": "233244589157", "shape": "dot", "size": 10, "title": "233244589157"}, {"font": {"color": "white"}, "group": 1, "id": "233244640084", "label": "233244640084", "shape": "dot", "size": 10, "title": "233244640084"}, {"font": {"color": "white"}, "group": 1, "id": "233244681553", "label": "233244681553", "shape": "dot", "size": 10, "title": "233244681553"}, {"font": {"color": "white"}, "group": 1, "id": "233244682178", "label": "233244682178", "shape": "dot", "size": 10, "title": "233244682178"}, {"font": {"color": "white"}, "group": 1, "id": "233244682566", "label": "233244682566", "shape": "dot", "size": 10, "title": "233244682566"}, {"font": {"color": "white"}, "group": 1, "id": "233244686922", "label": "233244686922", "shape": "dot", "size": 10, "title": "233244686922"}, {"font": {"color": "white"}, "group": 1, "id": "233244687665", "label": "233244687665", "shape": "dot", "size": 10, "title": "233244687665"}, {"font": {"color": "white"}, "group": 1, "id": "233244698869", "label": "233244698869", "shape": "dot", "size": 10, "title": "233244698869"}, {"font": {"color": "white"}, "group": 1, "id": "233244748484", "label": "233244748484", "shape": "dot", "size": 10, "title": "233244748484"}, {"font": {"color": "white"}, "group": 1, "id": "233244788399", "label": "233244788399", "shape": "dot", "size": 10, "title": "233244788399"}, {"font": {"color": "white"}, "group": 1, "id": "233244845464", "label": "233244845464", "shape": "dot", "size": 10, "title": "233244845464"}, {"font": {"color": "white"}, "group": 1, "id": "233244861593", "label": "233244861593", "shape": "dot", "size": 10, "title": "233244861593"}, {"font": {"color": "white"}, "group": 1, "id": "233244872809", "label": "233244872809", "shape": "dot", "size": 10, "title": "233244872809"}, {"font": {"color": "white"}, "group": 1, "id": "233244995111", "label": "233244995111", "shape": "dot", "size": 10, "title": "233244995111"}, {"font": {"color": "white"}, "group": 1, "id": "233246103515", "label": "233246103515", "shape": "dot", "size": 10, "title": "233246103515"}, {"font": {"color": "white"}, "group": 1, "id": "233246304820", "label": "233246304820", "shape": "dot", "size": 10, "title": "233246304820"}, {"font": {"color": "white"}, "group": 1, "id": "233246393861", "label": "233246393861", "shape": "dot", "size": 10, "title": "233246393861"}, {"font": {"color": "white"}, "group": 1, "id": "233246403436", "label": "233246403436", "shape": "dot", "size": 10, "title": "233246403436"}, {"font": {"color": "white"}, "group": 1, "id": "233246440771", "label": "233246440771", "shape": "dot", "size": 10, "title": "233246440771"}, {"font": {"color": "white"}, "group": 1, "id": "233246507141", "label": "233246507141", "shape": "dot", "size": 10, "title": "233246507141"}, {"font": {"color": "white"}, "group": 1, "id": "233246642290", "label": "233246642290", "shape": "dot", "size": 10, "title": "233246642290"}, {"font": {"color": "white"}, "group": 1, "id": "233246731487", "label": "233246731487", "shape": "dot", "size": 10, "title": "233246731487"}, {"font": {"color": "white"}, "group": 1, "id": "233247211107", "label": "233247211107", "shape": "dot", "size": 10, "title": "233247211107"}, {"font": {"color": "white"}, "group": 1, "id": "233248888525", "label": "233248888525", "shape": "dot", "size": 10, "title": "233248888525"}, {"font": {"color": "white"}, "group": 1, "id": "233249106005", "label": "233249106005", "shape": "dot", "size": 10, "title": "233249106005"}, {"font": {"color": "white"}, "group": 1, "id": "233249343621", "label": "233249343621", "shape": "dot", "size": 10, "title": "233249343621"}, {"font": {"color": "white"}, "group": 1, "id": "233249374746", "label": "233249374746", "shape": "dot", "size": 10, "title": "233249374746"}, {"font": {"color": "white"}, "group": 1, "id": "233249464839", "label": "233249464839", "shape": "dot", "size": 10, "title": "233249464839"}, {"font": {"color": "white"}, "group": 1, "id": "233260792097", "label": "233260792097", "shape": "dot", "size": 10, "title": "233260792097"}, {"font": {"color": "white"}, "group": 1, "id": "233261473912", "label": "233261473912", "shape": "dot", "size": 10, "title": "233261473912"}, {"font": {"color": "white"}, "group": 1, "id": "233262222240", "label": "233262222240", "shape": "dot", "size": 10, "title": "233262222240"}, {"font": {"color": "white"}, "group": 1, "id": "233264545409", "label": "233264545409", "shape": "dot", "size": 10, "title": "233264545409"}, {"font": {"color": "white"}, "group": 1, "id": "233270683434", "label": "233270683434", "shape": "dot", "size": 10, "title": "233270683434"}, {"font": {"color": "white"}, "group": 1, "id": "233273972248", "label": "233273972248", "shape": "dot", "size": 10, "title": "233273972248"}, {"font": {"color": "white"}, "group": 1, "id": "233302610400", "label": "233302610400", "shape": "dot", "size": 10, "title": "233302610400"}, {"font": {"color": "white"}, "group": 1, "id": "233302739373", "label": "233302739373", "shape": "dot", "size": 10, "title": "233302739373"}, {"font": {"color": "white"}, "group": 1, "id": "233307000790", "label": "233307000790", "shape": "dot", "size": 10, "title": "233307000790"}, {"font": {"color": "white"}, "group": 1, "id": "233308231076", "label": "233308231076", "shape": "dot", "size": 10, "title": "233308231076"}, {"font": {"color": "white"}, "group": 1, "id": "233500004343", "label": "233500004343", "shape": "dot", "size": 10, "title": "233500004343"}, {"font": {"color": "white"}, "group": 1, "id": "233504030809", "label": "233504030809", "shape": "dot", "size": 10, "title": "233504030809"}, {"font": {"color": "white"}, "group": 1, "id": "233504539525", "label": "233504539525", "shape": "dot", "size": 10, "title": "233504539525"}, {"font": {"color": "white"}, "group": 1, "id": "233506242669", "label": "233506242669", "shape": "dot", "size": 10, "title": "233506242669"}, {"font": {"color": "white"}, "group": 1, "id": "233506920236", "label": "233506920236", "shape": "dot", "size": 10, "title": "233506920236"}, {"font": {"color": "white"}, "group": 1, "id": "233508009332", "label": "233508009332", "shape": "dot", "size": 10, "title": "233508009332"}, {"font": {"color": "white"}, "group": 1, "id": "233530207833", "label": "233530207833", "shape": "dot", "size": 10, "title": "233530207833"}, {"font": {"color": "white"}, "group": 1, "id": "233530236864", "label": "233530236864", "shape": "dot", "size": 10, "title": "233530236864"}, {"font": {"color": "white"}, "group": 1, "id": "233531100401", "label": "233531100401", "shape": "dot", "size": 10, "title": "233531100401"}, {"font": {"color": "white"}, "group": 1, "id": "233531728704", "label": "233531728704", "shape": "dot", "size": 10, "title": "233531728704"}, {"font": {"color": "white"}, "group": 1, "id": "233534104261", "label": "233534104261", "shape": "dot", "size": 10, "title": "233534104261"}, {"font": {"color": "white"}, "group": 1, "id": "233534599897", "label": "233534599897", "shape": "dot", "size": 10, "title": "233534599897"}, {"font": {"color": "white"}, "group": 1, "id": "233537051223", "label": "233537051223", "shape": "dot", "size": 10, "title": "233537051223"}, {"font": {"color": "white"}, "group": 1, "id": "233540518343", "label": "233540518343", "shape": "dot", "size": 10, "title": "233540518343"}, {"font": {"color": "white"}, "group": 1, "id": "233540897290", "label": "233540897290", "shape": "dot", "size": 10, "title": "233540897290"}, {"font": {"color": "white"}, "group": 1, "id": "233541762586", "label": "233541762586", "shape": "dot", "size": 10, "title": "233541762586"}, {"font": {"color": "white"}, "group": 1, "id": "233543019017", "label": "233543019017", "shape": "dot", "size": 10, "title": "233543019017"}, {"font": {"color": "white"}, "group": 1, "id": "233545118746", "label": "233545118746", "shape": "dot", "size": 10, "title": "233545118746"}, {"font": {"color": "white"}, "group": 1, "id": "233545958970", "label": "233545958970", "shape": "dot", "size": 10, "title": "233545958970"}, {"font": {"color": "white"}, "group": 1, "id": "233546162588", "label": "233546162588", "shape": "dot", "size": 10, "title": "233546162588"}, {"font": {"color": "white"}, "group": 1, "id": "233547069916", "label": "233547069916", "shape": "dot", "size": 10, "title": "233547069916"}, {"font": {"color": "white"}, "group": 1, "id": "233547252524", "label": "233547252524", "shape": "dot", "size": 10, "title": "233547252524"}, {"font": {"color": "white"}, "group": 1, "id": "233548898379", "label": "233548898379", "shape": "dot", "size": 10, "title": "233548898379"}, {"font": {"color": "white"}, "group": 1, "id": "233549094468", "label": "233549094468", "shape": "dot", "size": 10, "title": "233549094468"}, {"font": {"color": "white"}, "group": 1, "id": "233550997692", "label": "233550997692", "shape": "dot", "size": 10, "title": "233550997692"}, {"font": {"color": "white"}, "group": 1, "id": "233552745846", "label": "233552745846", "shape": "dot", "size": 10, "title": "233552745846"}, {"font": {"color": "white"}, "group": 1, "id": "233553408788", "label": "233553408788", "shape": "dot", "size": 10, "title": "233553408788"}, {"font": {"color": "white"}, "group": 1, "id": "233553494640", "label": "233553494640", "shape": "dot", "size": 10, "title": "233553494640"}, {"font": {"color": "white"}, "group": 1, "id": "233553574779", "label": "233553574779", "shape": "dot", "size": 10, "title": "233553574779"}, {"font": {"color": "white"}, "group": 1, "id": "233554230738", "label": "233554230738", "shape": "dot", "size": 10, "title": "233554230738"}, {"font": {"color": "white"}, "group": 1, "id": "233554566416", "label": "233554566416", "shape": "dot", "size": 10, "title": "233554566416"}, {"font": {"color": "white"}, "group": 1, "id": "233555502828", "label": "233555502828", "shape": "dot", "size": 10, "title": "233555502828"}, {"font": {"color": "white"}, "group": 1, "id": "233555949273", "label": "233555949273", "shape": "dot", "size": 10, "title": "233555949273"}, {"font": {"color": "white"}, "group": 1, "id": "233593384078", "label": "233593384078", "shape": "dot", "size": 10, "title": "233593384078"}, {"font": {"color": "white"}, "group": 1, "id": "233593843350", "label": "233593843350", "shape": "dot", "size": 10, "title": "233593843350"}, {"font": {"color": "white"}, "group": 1, "id": "233594177283", "label": "233594177283", "shape": "dot", "size": 10, "title": "233594177283"}, {"font": {"color": "white"}, "group": 1, "id": "233594191049", "label": "233594191049", "shape": "dot", "size": 10, "title": "233594191049"}, {"font": {"color": "white"}, "group": 1, "id": "233595481523", "label": "233595481523", "shape": "dot", "size": 10, "title": "233595481523"}, {"font": {"color": "white"}, "group": 1, "id": "233596308250", "label": "233596308250", "shape": "dot", "size": 10, "title": "233596308250"}, {"font": {"color": "white"}, "group": 1, "id": "23782903221", "label": "23782903221", "shape": "dot", "size": 10, "title": "23782903221"}, {"font": {"color": "white"}, "group": 1, "id": "2439146289149251", "label": "2439146289149251", "shape": "dot", "size": 10, "title": "2439146289149251"}, {"font": {"color": "white"}, "group": 1, "id": "339816537945", "label": "339816537945", "shape": "dot", "size": 10, "title": "339816537945"}, {"font": {"color": "white"}, "group": 1, "id": "357824810", "label": "357824810", "shape": "dot", "size": 10, "title": "357824810"}, {"font": {"color": "white"}, "group": 1, "id": "423323564101", "label": "423323564101", "shape": "dot", "size": 10, "title": "423323564101"}, {"font": {"color": "white"}, "group": 1, "id": "43543628", "label": "43543628", "shape": "dot", "size": 10, "title": "43543628"}, {"font": {"color": "white"}, "group": 1, "id": "43581107", "label": "43581107", "shape": "dot", "size": 10, "title": "43581107"}, {"font": {"color": "white"}, "group": 1, "id": "4358596295941", "label": "4358596295941", "shape": "dot", "size": 10, "title": "4358596295941"}, {"font": {"color": "white"}, "group": 1, "id": "435942", "label": "435942", "shape": "dot", "size": 10, "title": "435942"}, {"font": {"color": "white"}, "group": 1, "id": "43824120", "label": "43824120", "shape": "dot", "size": 10, "title": "43824120"}, {"font": {"color": "white"}, "group": 1, "id": "454795816719931", "label": "454795816719931", "shape": "dot", "size": 10, "title": "454795816719931"}, {"font": {"color": "white"}, "group": 1, "id": "4901", "label": "4901", "shape": "dot", "size": 10, "title": "4901"}, {"font": {"color": "white"}, "group": 1, "id": "49038428", "label": "49038428", "shape": "dot", "size": 10, "title": "49038428"}, {"font": {"color": "white"}, "group": 1, "id": "4921932210", "label": "4921932210", "shape": "dot", "size": 10, "title": "4921932210"}, {"font": {"color": "white"}, "group": 1, "id": "506270", "label": "506270", "shape": "dot", "size": 10, "title": "506270"}, {"font": {"color": "white"}, "group": 1, "id": "5381060", "label": "5381060", "shape": "dot", "size": 10, "title": "5381060"}, {"font": {"color": "white"}, "group": 1, "id": "5473929521", "label": "5473929521", "shape": "dot", "size": 10, "title": "5473929521"}, {"font": {"color": "white"}, "group": 1, "id": "739409503", "label": "739409503", "shape": "dot", "size": 10, "title": "739409503"}, {"font": {"color": "white"}, "group": 1, "id": "7447816053421", "label": "7447816053421", "shape": "dot", "size": 10, "title": "7447816053421"}, {"font": {"color": "white"}, "group": 1, "id": "77743786", "label": "77743786", "shape": "dot", "size": 10, "title": "77743786"}, {"font": {"color": "white"}, "group": 1, "id": "873916939149471", "label": "873916939149471", "shape": "dot", "size": 10, "title": "873916939149471"}, {"font": {"color": "white"}, "group": 1, "id": "ECOBANK", "label": "ECOBANK", "shape": "dot", "size": 10, "title": "ECOBANK"}, {"font": {"color": "white"}, "group": 1, "id": "Fidelity", "label": "Fidelity", "shape": "dot", "size": 10, "title": "Fidelity"}, {"font": {"color": "white"}, "group": 1, "id": "Ghana Water", "label": "Ghana Water", "shape": "dot", "size": 10, "title": "Ghana Water"}, {"font": {"color": "white"}, "group": 1, "id": "MELCOM", "label": "MELCOM", "shape": "dot", "size": 10, "title": "MELCOM"}, {"font": {"color": "white"}, "group": 1, "id": "MTN", "label": "MTN", "shape": "dot", "size": 10, "title": "MTN"}, {"font": {"color": "white"}, "group": 1, "id": "MTN-Just4U", "label": "MTN-Just4U", "shape": "dot", "size": 10, "title": "MTN-Just4U"}, {"font": {"color": "white"}, "group": 1, "id": "MTNBackup", "label": "MTNBackup", "shape": "dot", "size": 10, "title": "MTNBackup"}, {"font": {"color": "white"}, "group": 1, "id": "MTNFBB", "label": "MTNFBB", "shape": "dot", "size": 10, "title": "MTNFBB"}, {"font": {"color": "white"}, "group": 1, "id": "MobileMoney", "label": "MobileMoney", "shape": "dot", "size": 10, "title": "MobileMoney"}, {"font": {"color": "white"}, "group": 1, "id": "MyMTN 2", "label": "MyMTN 2", "shape": "dot", "size": 10, "title": "MyMTN 2"}, {"font": {"color": "white"}, "group": 1, "id": "ORCADeco", "label": "ORCADeco", "shape": "dot", "size": 10, "title": "ORCADeco"}, {"font": {"color": "white"}, "group": 1, "id": "Stanbic", "label": "Stanbic", "shape": "dot", "size": 10, "title": "Stanbic"}, {"font": {"color": "white"}, "group": 1, "id": "Telecel", "label": "Telecel", "shape": "dot", "size": 10, "title": "Telecel"}, {"font": {"color": "white"}, "group": 1, "id": "Telecel-FBB", "label": "Telecel-FBB", "shape": "dot", "size": 10, "title": "Telecel-FBB"}, {"font": {"color": "white"}, "group": 1, "id": "WASSCE\u0026BECE", "label": "WASSCE\u0026BECE", "shape": "dot", "size": 10, "title": "WASSCE\u0026BECE"}, {"font": {"color": "white"}, "group": 2, "id": "nan", "label": "nan", "shape": "dot", "size": 5, "title": "nan"}]);
+                  edges = new vis.DataSet([{"from": "346370", "title": "2 calls", "to": "233240991516", "width": 2}, {"from": "51358147210", "title": "117 calls", "to": "233240991516", "width": 117}, {"from": "6439433", "title": "4 calls", "to": "233240991516", "width": 4}, {"from": "783273271", "title": "151 calls", "to": "233240991516", "width": 151}, {"from": "431", "title": "4 calls", "to": "233240991516", "width": 4}, {"from": "233593954423", "title": "411 calls", "to": "233240991516", "width": 411}, {"from": "233240991516", "title": "1 calls", "to": "1355", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "16784978041", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "225842610", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "231770511512", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "231777523228", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "231886518054", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233201219203", "width": 2}, {"from": "233240991516", "title": "5 calls", "to": "233202021709", "width": 5}, {"from": "233240991516", "title": "1 calls", "to": "233202526305", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233202803621", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233203902561", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233207028863", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233208482616", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233208966008", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233209213259", "width": 1}, {"from": "233240991516", "title": "3 calls", "to": "233240796931", "width": 3}, {"from": "233240991516", "title": "10 calls", "to": "233240334234", "width": 10}, {"from": "233240991516", "title": "31 calls", "to": "233241366640", "width": 31}, {"from": "233240991516", "title": "22 calls", "to": "233242287955", "width": 22}, {"from": "233240991516", "title": "14 calls", "to": "233243757110", "width": 14}, {"from": "233240991516", "title": "5 calls", "to": "233244354463", "width": 5}, {"from": "233240991516", "title": "25 calls", "to": "233244809000", "width": 25}, {"from": "233240991516", "title": "10 calls", "to": "233256666058", "width": 10}, {"from": "233240991516", "title": "4 calls", "to": "233508888450", "width": 4}, {"from": "233240991516", "title": "4 calls", "to": "233533368971", "width": 4}, {"from": "233240991516", "title": "10 calls", "to": "233536641991", "width": 10}, {"from": "233240991516", "title": "2 calls", "to": "233550538528", "width": 2}, {"from": "233240991516", "title": "34 calls", "to": "233555273377", "width": 34}, {"from": "233240991516", "title": "4 calls", "to": "233556820282", "width": 4}, {"from": "233240991516", "title": "13 calls", "to": "233557830001", "width": 13}, {"from": "233240991516", "title": "5 calls", "to": "233558380087", "width": 5}, {"from": "233240991516", "title": "7 calls", "to": "233558600936", "width": 7}, {"from": "233240991516", "title": "264 calls", "to": "233593954225", "width": 264}, {"from": "233240991516", "title": "14 calls", "to": "233596387853", "width": 14}, {"from": "233240991516", "title": "1 calls", "to": "233240993635", "width": 1}, {"from": "233240991516", "title": "3 calls", "to": "233241198488", "width": 3}, {"from": "233240991516", "title": "1 calls", "to": "233241830259", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233242024203", "width": 2}, {"from": "233240991516", "title": "10 calls", "to": "233242251178", "width": 10}, {"from": "233240991516", "title": "1 calls", "to": "233242308181", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233242318945", "width": 1}, {"from": "233240991516", "title": "5 calls", "to": "233242337588", "width": 5}, {"from": "233240991516", "title": "1 calls", "to": "233242534727", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233242870344", "width": 1}, {"from": "233240991516", "title": "3 calls", "to": "233242944563", "width": 3}, {"from": "233240991516", "title": "1 calls", "to": "233243159292", "width": 1}, {"from": "233240991516", "title": "4 calls", "to": "233243569772", "width": 4}, {"from": "233240991516", "title": "1 calls", "to": "233243886736", "width": 1}, {"from": "233240991516", "title": "4 calls", "to": "233244217277", "width": 4}, {"from": "233240991516", "title": "1 calls", "to": "233244250823", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244277344", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244300000", "width": 1}, {"from": "233240991516", "title": "8 calls", "to": "233244313800", "width": 8}, {"from": "233240991516", "title": "3 calls", "to": "233244333150", "width": 3}, {"from": "233240991516", "title": "1 calls", "to": "233244431926", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233244492321", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233244494049", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244514923", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244589157", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233244640084", "width": 2}, {"from": "233240991516", "title": "3 calls", "to": "233244681553", "width": 3}, {"from": "233240991516", "title": "6 calls", "to": "233244682178", "width": 6}, {"from": "233240991516", "title": "1 calls", "to": "233244682566", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244686922", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244687665", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244698869", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244748484", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233244788399", "width": 1}, {"from": "233240991516", "title": "4 calls", "to": "233244845464", "width": 4}, {"from": "233240991516", "title": "1 calls", "to": "233244861593", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233244872809", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233244995111", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233246103515", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233246304820", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233246393861", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233246403436", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233246440771", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233246507141", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233246642290", "width": 2}, {"from": "233240991516", "title": "4 calls", "to": "233246731487", "width": 4}, {"from": "233240991516", "title": "5 calls", "to": "233247211107", "width": 5}, {"from": "233240991516", "title": "4 calls", "to": "233248888525", "width": 4}, {"from": "233240991516", "title": "1 calls", "to": "233249106005", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233249343621", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233249374746", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233249464839", "width": 1}, {"from": "233240991516", "title": "3 calls", "to": "233260792097", "width": 3}, {"from": "233240991516", "title": "1 calls", "to": "233261473912", "width": 1}, {"from": "233240991516", "title": "5 calls", "to": "233262222240", "width": 5}, {"from": "233240991516", "title": "1 calls", "to": "233264545409", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233270683434", "width": 1}, {"from": "233240991516", "title": "5 calls", "to": "233273972248", "width": 5}, {"from": "233240991516", "title": "1 calls", "to": "233302610400", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233302739373", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233307000790", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233308231076", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233500004343", "width": 2}, {"from": "233240991516", "title": "2 calls", "to": "233504030809", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233504539525", "width": 1}, {"from": "233240991516", "title": "3 calls", "to": "233506242669", "width": 3}, {"from": "233240991516", "title": "1 calls", "to": "233506920236", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233508009332", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233530207833", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233530236864", "width": 1}, {"from": "233240991516", "title": "6 calls", "to": "233531100401", "width": 6}, {"from": "233240991516", "title": "2 calls", "to": "233531728704", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233534104261", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233534599897", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233537051223", "width": 2}, {"from": "233240991516", "title": "2 calls", "to": "233540518343", "width": 2}, {"from": "233240991516", "title": "7 calls", "to": "233540897290", "width": 7}, {"from": "233240991516", "title": "1 calls", "to": "233541762586", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233543019017", "width": 2}, {"from": "233240991516", "title": "2 calls", "to": "233545118746", "width": 2}, {"from": "233240991516", "title": "2 calls", "to": "233545958970", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233546162588", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233547069916", "width": 1}, {"from": "233240991516", "title": "5 calls", "to": "233547252524", "width": 5}, {"from": "233240991516", "title": "1 calls", "to": "233548898379", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233549094468", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233550997692", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233552745846", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233553408788", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233553494640", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233553574779", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "233554230738", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233554566416", "width": 1}, {"from": "233240991516", "title": "6 calls", "to": "233555502828", "width": 6}, {"from": "233240991516", "title": "2 calls", "to": "233555949273", "width": 2}, {"from": "233240991516", "title": "6 calls", "to": "233593384078", "width": 6}, {"from": "233240991516", "title": "1 calls", "to": "233593843350", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233594177283", "width": 1}, {"from": "233240991516", "title": "1 calls", "to": "233594191049", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "233595481523", "width": 2}, {"from": "233240991516", "title": "3 calls", "to": "233596308250", "width": 3}, {"from": "233240991516", "title": "3 calls", "to": "23782903221", "width": 3}, {"from": "233240991516", "title": "2 calls", "to": "2439146289149251", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "339816537945", "width": 1}, {"from": "233240991516", "title": "7 calls", "to": "357824810", "width": 7}, {"from": "233240991516", "title": "21 calls", "to": "423323564101", "width": 21}, {"from": "233240991516", "title": "2 calls", "to": "43543628", "width": 2}, {"from": "233240991516", "title": "6 calls", "to": "43581107", "width": 6}, {"from": "233240991516", "title": "3 calls", "to": "4358596295941", "width": 3}, {"from": "233240991516", "title": "9 calls", "to": "435942", "width": 9}, {"from": "233240991516", "title": "8 calls", "to": "43824120", "width": 8}, {"from": "233240991516", "title": "1 calls", "to": "454795816719931", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "4901", "width": 2}, {"from": "233240991516", "title": "3 calls", "to": "49038428", "width": 3}, {"from": "233240991516", "title": "2 calls", "to": "4921932210", "width": 2}, {"from": "233240991516", "title": "4 calls", "to": "506270", "width": 4}, {"from": "233240991516", "title": "1 calls", "to": "5381060", "width": 1}, {"from": "233240991516", "title": "5 calls", "to": "5473929521", "width": 5}, {"from": "233240991516", "title": "2 calls", "to": "739409503", "width": 2}, {"from": "233240991516", "title": "2 calls", "to": "7447816053421", "width": 2}, {"from": "233240991516", "title": "1 calls", "to": "77743786", "width": 1}, {"from": "233240991516", "title": "4 calls", "to": "873916939149471", "width": 4}, {"from": "233240991516", "title": "76 calls", "to": "ECOBANK", "width": 76}, {"from": "233240991516", "title": "1 calls", "to": "Fidelity", "width": 1}, {"from": "233240991516", "title": "3 calls", "to": "Ghana Water", "width": 3}, {"from": "233240991516", "title": "2 calls", "to": "MELCOM", "width": 2}, {"from": "233240991516", "title": "4 calls", "to": "MTN", "width": 4}, {"from": "233240991516", "title": "3 calls", "to": "MTN-Just4U", "width": 3}, {"from": "233240991516", "title": "3 calls", "to": "MTNBackup", "width": 3}, {"from": "233240991516", "title": "2 calls", "to": "MTNFBB", "width": 2}, {"from": "233240991516", "title": "87 calls", "to": "MobileMoney", "width": 87}, {"from": "233240991516", "title": "6 calls", "to": "MyMTN 2", "width": 6}, {"from": "233240991516", "title": "1 calls", "to": "ORCADeco", "width": 1}, {"from": "233240991516", "title": "2 calls", "to": "Stanbic", "width": 2}, {"from": "233240991516", "title": "2 calls", "to": "Telecel", "width": 2}, {"from": "233240991516", "title": "9 calls", "to": "Telecel-FBB", "width": 9}, {"from": "233240991516", "title": "1 calls", "to": "WASSCE\u0026BECE", "width": 1}, {"from": "nan", "title": "530 calls", "to": "nan", "width": 530}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
